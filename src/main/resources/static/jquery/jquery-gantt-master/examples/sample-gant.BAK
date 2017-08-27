@@ -1,0 +1,51 @@
+<html>
+<link href="css/style.css" type="text/css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="../dist/jquery-gantt.js"></script>
+<style type="text/css">
+    .fn-gantt *,
+    .fn-gantt *:after,
+    .fn-gantt *:before {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+</style>
+<div class="contain">
+    <div class="gantt"></div>
+</div>
+<script>
+			$(".foo").gantt({
+			  scale: "weeks",
+			  minScale: "weeks",
+			  maxScale: "months",
+			  onItemClick: function(data) {
+			    alert("チャート上をクリック");
+			  },
+			  onAddClick: function(dt, rowId) {
+			    alert("チャート部分以外をクリック");
+			  }
+			});
+"use strict";$(".gantt").gantt({
+    source: [{
+      name: "項目01",
+      desc: "項目01の説明01",
+      values: [{
+        from: "/Date(1320192000000)/",
+        to: "/Date(1322401600000)/",
+        label: "項目01の説明01のラベル", 
+        customClass: "ganttRed",
+      }]
+    },{
+      name: " ",
+      desc: "項目01の説明02",
+      values: [{
+        from: "/Date(1322611200000)/",
+        to: "/Date(1323302400000)/",
+        label: "項目01の説明02のラベル", 
+        customClass: "ganttRed"
+      }]
+
+
+</script>
+</html>

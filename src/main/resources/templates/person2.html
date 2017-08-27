@@ -1,0 +1,508 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<title>顧客情報</title>
+<link rel="stylesheet"
+	href="../jquery/jquery-ui-1.11.4.custom/jquery-ui.css"></link>
+<link href="../jquery/lity-2.3.0/dist/lity.css" rel="stylesheet"></link>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"></link>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+<script src="jquery/lity-2.3.0/dist/lity.js"></script>
+<script src="js/customer.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery/imgLiquid-master/js/jquery.min.js"></script>
+<script type="text/javascript" src="jquery/imgLiquid-master/js/imgLiquid-min.js"></script>
+<style>
+.imagePreview {
+    width: 100%;
+    height: 180px;
+    background-position: center center;
+    background-size: cover;
+    -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+    display: inline-block;
+}
+.ui-menu {
+	width: 150px;
+}
+
+.box {
+	display: inline-block;
+	font-size: 16px;
+}
+
+.demo {
+	width: 500px;
+	margin: 0 auto;
+	padding: 10px 0;
+	font-family: sans-serif;
+	font-size: 30px;
+	color: black;
+}
+
+.heading {
+	margin: 10px 0
+}
+
+.demo0 .heading {
+	position: relative;
+	padding-left: 30px;
+}
+
+.demo0 .heading:before, .demo0 .heading:after {
+	content: "□";
+	position: absolute;
+	width: 4px;
+	height: 4px;
+}
+
+.demo0 .heading:before {
+	left: 0;
+	top: -3px;
+}
+
+.demo0 .heading:after {
+	left: 5.5px;
+	top: 3.5px;
+}
+
+$("#week_select" ).selectmenu ();
+	/* チャットレイアウト */ 
+	.chat-box {
+	width: 60%;
+	height: auto;
+	overflow: hidden; /*floatの解除*/
+	margin-bottom: 20px;
+}
+
+.chat-area {
+	width: 60%;
+	float: left;
+}
+
+.chat-hukidashi {
+	display: inline-block; /*コメントの文字数に合わせて可変*/
+	padding: 15px 20px;
+	margin-left: 1px;
+	margin-top: 10px;
+	border: 1px solid gray;
+	border-radius: 10px;
+}
+
+.chat-hukidashi2 {
+	display: inline-block; /*コメントの文字数に合わせて可変*/
+	padding: 15px 20px;
+	margin-left: 20px;
+	margin-top: 10px;
+	border: 1px solid gray;
+	border-radius: 10px;
+}
+
+h1 {
+	color: #6594e0; /*文字色*/
+	font-size:100%;
+	border-bottom: dashed 2px #6594e0;
+	/*線の種類（点線）2px 線色*/ /*線の種類（実線） 太さ 色*/
+}
+.right {
+   text-align: right;
+}
+.error {
+	background-color:#F0F8FF"
+}
+
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > th {
+  vertical-align: middle;
+  text-align: center;
+}
+.imagePreview {
+    width: 100%;
+    height: 180px;
+    background-position: center center;
+    background-size: cover;
+    -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+    display: inline-block;
+}
+</style>
+</head>
+<body>
+<div id="response" style="display:none"></div>
+    <div th:text="${role}" id="role"></div>
+    <form th:action="@{/logout}" method="post"><button type="submit" class="btn btn-default btn-lg">ログアウト</button></form>
+  	<p>
+     <span th:text="${login}">duke</span>さんログイン中。
+  	</p>
+<span th:text="${week}" id="week" style="display: none"></span>
+<span th:text="${id}" id="id" style="display: none"></span>
+	<div class="demo demo0">
+		<div class="heading"><span id="title_week"></span> <span id="title_name"></span>様</div>
+	</div>
+	<select name="select" id="week_select" class="form-control" style="width:150px;" onchange="week_select_change();">
+		<option value="1">1週</option>
+		<option value="2">2週</option>
+		<option value="3">3週</option>
+		<option value="4">4週</option>
+		<option value="5">5週</option>
+		<option value="6">6週</option>
+		<option value="7">7週</option>
+		<option value="8">8週</option>
+		<option value="9">9週</option>
+		<option value="10">10週</option>
+		<option value="11">11週</option>
+		<option value="12">12週</option>
+		<option value="13">まとめ</option>
+	</select>
+	<!-- <button type="button" class="btn btn-primary"  id="location">移動</button>-->
+	おしゃべりはこちら→
+	<a href="https://www.chatwork.com" target="_blank">chat work</a>
+	<div id="tabs">
+			<ul>
+				<li><a href="#tabs_diary">週まとめ</a></li>
+				<li><a href="#tabs_plan">計画</a></li>
+				<li><a href="#tabs_customer">会員情報</a></li>
+			</ul>
+			<div id="tabs_diary">
+			<div class="container">
+				<div id="tabs_weight">				
+					<h1>グラフ</h1>
+					<div class="box" id="save_btn">
+						<button type="button" id="btn_weight" class="btn btn-primary btn-lg" onclick="btn_weight_save_click();">登録</button>
+						<!-- <button type="button" id="btn_weight" onclick="btn_weight_save_click();">-->
+							<!--<img src="images/save.png" />-->
+						<!--</button>-->
+					</div>
+					<div id="weight_id" style="display: none"></div>
+						<canvas id="canvas"></canvas>
+						<table class="table table-condensed table-hover table-bordered">
+							<tr>
+								<th align="center">週</th>
+								<th align="center">体重</th>
+								<th align="center">マイル</th>
+								<th align="center">差分</th>
+							</tr>
+							<tr id="wtr0">
+								<td>B</td>
+								<td class="right"><input type="text" id="w0" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m0" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff0">0</td>
+							</tr>
+							<tr id="wtr1">
+								<td>W1</td>
+								<td class="right"><input type="text" id="w1" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m1" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff1"></td>
+							</tr>
+							<tr id="wtr2">
+								<td>W2</td>
+								<td class="right"><input type="text" id="w2" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m2" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff2"></td>
+							</tr>
+							<tr id="wtr3">
+								<td>W3</td>
+								<td class="right"><input type="text" id="w3" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m3" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff3"></td>
+							</tr>
+							<tr id="wtr4">
+								<td>W4</td>
+								<td class="right"><input type="text" id="w4" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m4" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff4"></td>
+							</tr>
+							<tr id="wtr5">
+								<td>W5</td>
+								<td class="right"><input type="text" id="w5" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m5" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff5"></td>
+							</tr>
+							<tr id="wtr6">
+								<td>W6</td>
+								<td class="right"><input type="text" id="w6" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m6" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff6"></td>
+							</tr>
+							<tr id="wtr7">
+								<td>W7</td>
+								<td class="right"><input type="text" id="w7" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m7" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff7"></td>
+							</tr>
+							<tr id="wtr8">
+								<td>W8</td>
+								<td class="right"><input type="text" id="w8" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m8" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff8"></td>
+							</tr>
+							<tr id="wtr9">
+								<td>W9</td>
+								<td class="right"><input type="text" id="w9" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m9" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff9"></td>
+							</tr>
+							<tr id="wtr10">
+								<td>W10</td>
+								<td class="right"><input type="text" id="w10" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m10" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff10"></td>
+							</tr>
+							<tr id="wtr11">
+								<td>W11</td>
+								<td class="right"><input type="text" id="w11" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m11" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff11"></td>
+							</tr>
+							<tr id="wtr12">
+								<td>W12</td>
+								<td class="right"><input type="text" id="w12" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right"><input type="text" id="m12" onChange="diff()" class="text-right" placeholder="" size="5"></input></td>
+								<td class="right" id="diff12"></td>
+							</tr>
+							<tr>
+								<td>min</td>
+								<td class="right"><input type="text" id="wmin" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"><input type="text" id="mmin" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"></td>
+							</tr>
+							<tr>
+								<td>max</td>
+								<td class="right"><input type="text" id="wmax" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"><input type="text" id="mmax" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"></td>
+							</tr>
+							<tr>
+								<td>scale</td>
+								<td class="right"><input type="text" id="wscale" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"><input type="text" id="mscale" class="text-right" placeholder=""  size="5"></input></td>
+								<td class="right"></td>
+							</tr>
+							
+						</table>
+				</div>
+				<div id="tabs_mind">
+					<h1>ダイエットのマインドセット</h1>
+					<div id="save_btn">
+						<button type="button" id="btn_mind" class="btn btn-primary btn-lg" onclick="btn_mind_save_click();">登録</button>
+						<!--<button type="button" id="btn_mind" onclick="btn_mind_save_click()">-->
+							<!--<img src="images/save.png" />-->
+						<!--</button>-->
+					</div>
+					<!--  <textarea id="mind_textarea" name="msg" cols="80" rows="20"></textarea>-->
+					<textarea placeholder="マインドセットを入力してください" rows="20" class="form-control" id="mind_textarea"></textarea>
+					<div id="mind_id" style="display: none"></div>					
+				</div>				
+				<div id="tabs_lecture">
+					<h1>レクチャー</h1>
+					<div id="save_btn">
+						<button type="button" id="lecture_save" class="btn btn-primary btn-lg" onclick="btn_lecture_save_click();">登録</button>
+						<!--<button type="button" id="lecture_save" onclick="btn_lecture_save_click();">-->
+							<!--<img src="images/save.png" />-->
+						<!--</button>-->
+					</div>
+					 <!-- <textarea id="lecture_textarea" name="msg" cols="80" rows="20"></textarea> -->
+					　<textarea placeholder="レクチャーを入力してください" rows="20" class="form-control" id="lecture_textarea"></textarea>
+					<div id="lecture_id" style="display: none"></div>					
+				</div>
+				<div id="tabs_history">
+					<h1>写真</h1>
+					<div class="message">
+							<div id="photo_area"></div>
+							<div id="save_btn">
+			    			<button type="button" id="btn_del" onclick="btn_photo_del_click();" class="btn btn-primary">画像削除</button>
+								<!--  <button type="button" id="btn_del" onclick="btn_photo_del_click();">-->
+									<!--<img src="images/del.png" /> -->
+								<!--</button> -->
+	             	<form id="data_upload_form" enctype="multipart/form-data" method="post">
+	                <!-- <input type="file" id="upload_file" name="upload_file" required="" ></input> -->
+									<!--  <input id="data_upload_button" type="submit" value="アップロード"></input>-->								
+									<button type="submit" class="btn btn-default">アップロード</button>
+									<!--<a href="http://192.168.11.131/hana.jpg" data-lity="data-lity"><img src="http://192.168.11.131/hana.jpg" /></a>	-->					  
+<!--  <div id="img-container" style="width:200px; height:150px;">-->
+<!--<div id="img-container1" style="width:200px; height:200px;">-->
+		<!--<a href="http://192.168.11.131/hana.jpg" data-lity="data-lity" ><img src="http://192.168.11.131/hana.jpg" /></a>-->					  
+<!--</div>-->
+<!--<div id="img-container2" style="width:200px; height:200px;">-->
+		<!--<a href="images/IMG_2342.JPG" data-lity="data-lity"><img src="images/IMG_2342.JPG" /></a>-->					  
+<!--</div>-->
+			
+									<div class="imagePreview"></div>
+									<div class="input-group">
+									    <label class="input-group-btn">
+									        <span class="btn btn-primary">
+													ファイルを選択してください<input type="file" id="upload_file" name="upload_file" required="" style="display:none"></input>
+									        </span>
+									    </label>
+									    <input type="text" class="form-control" readonly=""></input>
+									</div>						  
+							  </form>
+							  </div>
+						  <div id="photo_id" style="display: none"></div>	
+					</div>
+				</div>
+				<div id="tabs_advice">
+					<h1>振返り</h1>
+					<div id="save_btn">
+						<button type="button" id="btn_question" class="btn btn-primary btn-lg" onclick="btn_advice_save_click();">登録</button>
+						<!--<button type="button"  onclick="btn_advice_save_click()">-->
+							<!--<img src="images/save.png"></img>-->
+						<!--</button>-->
+					</div>
+					<div id="advice_messgae" contenteditable="true">
+						<!-- <textarea id="advice_textarea" name="msg" cols="80" rows="20"></textarea> -->
+					　　<textarea placeholder="入力してください" rows="20" class="form-control" id="advice_textarea"></textarea>
+					</div>
+				</div>
+				<div id="advice_id" style="display: none"></div>					
+			</div>
+			</div>
+			<div id="tabs_plan">
+				<h1>計画</h1>
+				<div id="save_btn">
+					<button type="button" id="btn_plan" class="btn btn-primary btn-lg" onclick="btn_plan_save_click();">登録</button>
+					<!-- <button type="button" id="btn_plan" onclick="btn_plan_save_click();"><img src="images/save.png"></img></button> -->
+				</div>
+				<div class="messgae">
+					<table id="plan_table" class="table table-condensed table-hover table-bordered"></table>
+				</div>
+			</div>
+			<div id="tabs_customer">
+				<h1>メンバー登録</h1>
+				<div id="save_btn">
+					<button type="button" id="btn_customer" class="btn btn-primary btn-lg" onclick="btn_plan_save_click();">登録</button>
+					<!--<button type="button" id="btn_customer" onclick="btn_customer_save_click()">-->
+						<!--<img src="images/save.png"></img>-->
+					<!--</button>-->
+				</div>
+				<div class="messgae">
+					<table id="customer_table" class="table table-condensed table-hover table-bordered">
+						<tr>
+							<th>名称</th>
+							<td><input type="text" id="customer_name" class="form-control" placeholder="入力してください"></input></td>
+						</tr>
+						<tr>
+							<th>パスワード</th>
+							<td><input type="text" id="customer_password" class="form-control" placeholder="入力してください"></input></td>
+						</tr>
+						<tr>
+							<th>メール</th>
+							<td><input type="text" id="customer_email" class="form-control" placeholder="入力してください"></input></td>
+						</tr>
+						<tr>
+							<th>開始日</th>
+							<td><input type="text" id="customer_startdate" class="datepicker" placeholder="選択してください"></input></td>
+						</tr>
+						<tr>
+							<th>誕生日</th>
+							<td><input type="text" id="customer_birth" class="datepicker" placeholder="選択してください"></input></td>
+						</tr>
+						<tr>
+							<th>興味</th>
+							<td><textarea id="customer_favorite" rows="4" class="form-control" placeholder="入力してください"></textarea></td>
+						</tr>
+						<tr>
+							<th>メモ</th>
+							<td><textarea id="customer_memo" rows="4" class="form-control" placeholder="入力してください"></textarea></td>
+						</tr>
+					</table>
+				</div>
+				<hr></hr>
+				<h1>レポート</h1>
+				<div id="save_btn">
+					<button type="button" id="btn_report" class="btn btn-primary btn-lg" onclick="btn_report_save_click();">登録</button>
+					<!--<button type="button" id="btn_report" onclick="btn_report_save_click();">-->
+						<!--<img src="images/save.png" />-->
+					<!--</button>-->
+				</div>
+				<div id="report"></div>
+			</div>
+	</div>
+<!-- ダイアログ関連 -->
+  <div style="display: none">
+  
+	　　<div id="alert_dialog" title="メッセージ">
+	    <div id="alert_msg"></div>
+		</div>
+		<div id="plan" contenteditable="true" style="background-color: white;"></div>-->
+		<!-- <input type="text" id="plan" class="form-control" placeholder="入力してください"></input>-->
+		<div id="customer" contenteditable="true"></div>
+		<div id="wmin1"></div>
+		<div id="wmin2"></div>
+		<div id="wmin3"></div>
+		<div id="wmin4"></div>
+		<div id="wmin5"></div>
+		<div id="wmin6"></div>
+		<div id="wmin7"></div>
+		<div id="wmin8"></div>
+		<div id="wmin9"></div>
+		<div id="wmin10"></div>
+		<div id="wmin11"></div>
+		<div id="wmin12"></div>
+		<div id="mmin1"></div>
+		<div id="mmin2"></div>
+		<div id="mmin3"></div>
+		<div id="mmin4"></div>
+		<div id="mmin5"></div>
+		<div id="mmin6"></div>
+		<div id="mmin7"></div>
+		<div id="mmin8"></div>
+		<div id="mmin9"></div>
+		<div id="mmin10"></div>
+		<div id="mmin11"></div>
+		<div id="mmin12"></div>
+		<div id="wmax1"></div>
+		<div id="wmax2"></div>
+		<div id="wmax3"></div>
+		<div id="wmax4"></div>
+		<div id="wmax5"></div>
+		<div id="wmax6"></div>
+		<div id="wmax7"></div>
+		<div id="wmax8"></div>
+		<div id="wmax9"></div>
+		<div id="wmax10"></div>
+		<div id="wmax11"></div>
+		<div id="wmax12"></div>
+		<div id="mmax1"></div>
+		<div id="mmax2"></div>
+		<div id="mmax3"></div>
+		<div id="mmax4"></div>
+		<div id="mmax5"></div>
+		<div id="mmax6"></div>
+		<div id="mmax7"></div>
+		<div id="mmax8"></div>
+		<div id="mmax9"></div>
+		<div id="mmax10"></div>
+		<div id="mmax11"></div>
+		<div id="mmax12"></div>
+		<div id="wscale1"></div>
+		<div id="wscale2"></div>
+		<div id="wscale3"></div>
+		<div id="wscale4"></div>
+		<div id="wscale5"></div>
+		<div id="wscale6"></div>
+		<div id="wscale7"></div>
+		<div id="wscale8"></div>
+		<div id="wscale9"></div>
+		<div id="wscale10"></div>
+		<div id="wscale11"></div>
+		<div id="wscale12"></div>
+		<div id="mscale1"></div>
+		<div id="mscale2"></div>
+		<div id="mscale3"></div>
+		<div id="mscale4"></div>
+		<div id="mscale5"></div>
+		<div id="mscale6"></div>
+		<div id="mscale7"></div>
+		<div id="mscale8"></div>
+		<div id="mscale9"></div>
+		<div id="mscale10"></div>
+		<div id="mscale11"></div>
+		<div id="mscale12"></div>
+	</div>
+</body>
+</html>

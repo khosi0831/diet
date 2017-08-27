@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url:  jdbc:postgresql://localhost/diet
+    username: postgres
+    password: admin
+    driverClassName: org.postgresql.Driver
+
+    view.prefix: /WEB-INF/views/
+    view.suffix: .jsp
+    
+  http:
+    encoding:
+      charset: Windows-31J
+      
+server:
+  tomcat:
+      uri-encoding: Windows-31J     
+multipart:
+    maxFileSize: 100MB
+    maxRequestSize: 100MB
+security:
+  basic:
+    enabled: false

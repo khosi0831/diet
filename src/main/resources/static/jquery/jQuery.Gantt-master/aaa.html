@@ -1,0 +1,84 @@
+
+<!doctype html>
+<html lang="en-au">
+    <head>
+        <title>jQuery.Gantt</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
+        <link rel="stylesheet" href="css/style.css" />
+        <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+        <link rel="stylesheet" href="http://taitems.github.com/UX-Lab/core/css/prettify.css" />
+		<style type="text/css">
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 13px;
+				padding: 0 0 50px 0;
+			}
+			.contain {
+				width: 800px;
+				margin: 0 auto;
+			}
+			h1 {
+				margin: 40px 0 20px 0;
+			}
+			h2 {
+				font-size: 1.5em;
+				padding-bottom: 3px;
+				border-bottom: 1px solid #DDD;
+				margin-top: 50px;
+				margin-bottom: 25px;
+			}
+			table th:first-child {
+				width: 150px;
+			}
+		</style>
+    </head>
+    <body>
+
+		<div class="contain">
+
+			<h1>
+				jQuery.Gantt
+				<small>&mdash; ガントチャートを描けるjQueryプラグイン</small>
+			</h1>
+
+
+
+	    	<h2>
+	    		Example
+	    	</h2>
+				
+			<div class="selector"></div>
+
+
+
+<a href="http://kachibito.net/">kachibito</a> / <a href="http://kachibito.net/web-design/jquery-gantt.html">Back to article</a> / <a href="https://github.com/taitems/jQuery.Gantt/">jQuery.Gantt on github</a>
+		</div>
+
+    </body>
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script src="js/jquery.fn.gantt.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
+	<script src="http://taitems.github.com/UX-Lab/core/js/prettify.js"></script>
+    <script>
+
+		$(function() {
+
+$(".selector").gantt({
+    source: "ajax/data.json",
+    scale: "weeks",
+    minScale: "weeks",
+    maxScale: "months",
+    onItemClick: function(data) {
+        alert("Item clicked - show some details");
+    },
+    onAddClick: function(dt, rowId) {
+        alert("Empty space clicked - add an item!");
+    },
+    onRender: function() {
+        console.log("chart rendered");
+    }
+});
+    </script>
+</html>
